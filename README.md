@@ -67,6 +67,7 @@ docker compose ps  # wait for 'healthy'
 
 ```docker compose logs -f mssql
 ```
+
 ---
 
 ### 3) Apply EF Core migration
@@ -81,3 +82,5 @@ dotnet ef database update -p src\OpenPeer.Infrastructure -s src\OpenPeer.Api
 
 ```dotnet run --project src\OpenPeer.Api
 ```
+
+---
