@@ -55,23 +55,20 @@ cd openpeer
 
 ---
 
-## Start the server
-
+### Start the server
 ```docker compose up -d
 docker compose ps  # wait for 'healthy'
 ```
 
 ---
 
-## Check logs if needed:
-
+### Check logs if needed:
 ```docker compose logs -f mssql
 ```
 
 ---
 
 ### 3) Apply EF Core migration
-
 ```dotnet tool install --global dotnet-ef  # if not installed
 dotnet ef database update -p src\OpenPeer.Infrastructure -s src\OpenPeer.Api
 ```
@@ -79,7 +76,6 @@ dotnet ef database update -p src\OpenPeer.Infrastructure -s src\OpenPeer.Api
 ---
 
 ### 4) Run the API
-
 ```dotnet run --project src\OpenPeer.Api
 ```
 
