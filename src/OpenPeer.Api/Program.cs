@@ -2,15 +2,17 @@ using Microsoft.EntityFrameworkCore;
 using OpenPeer.Infrastructure;
 using MediatR;
 using FluentValidation;
+using FluentValidation.Results;
 using OpenPeer.Application;
 using OpenPeer.Application.Articles.Commands;
 using OpenPeer.Application.Articles.Queries;
 
-var articles = app.MapGroup("/articles");
-
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMediatR(typeof(AssemblyMarker));
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssemblyContaining<AssemblyMarker>();
+});
 builder.Services.AddValidatorsFromAssembly(typeof(AssemblyMarker).Assembly);
 
 // Swagger
@@ -22,6 +24,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 var app = builder.Build();
+
+var articles = app.MapGroup("/articles");
 
 app.UseSwagger();
 app.UseSwaggerUI();
