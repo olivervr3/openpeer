@@ -1,7 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using OpenPeer.Infrastructure;
+using MediatR;
+using FluentValidation;
+using OpenPeer.Application;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddMediatR(typeof(AssemblyMarker));
+builder.Services.AddValidatorsFromAssembly(typeof(AssemblyMarker).Assembly);
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
