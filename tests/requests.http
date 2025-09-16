@@ -1,0 +1,23 @@
+### Create Article
+POST http://localhost:5084/articles/
+Content-Type: application/json
+
+{
+  "title": "First article",
+  "abstract": "Short test abstract."
+}
+
+### Get Article by Id
+GET http://localhost:5084/articles/1
+
+### Get Articles paged
+GET http://localhost:5084/articles?page=1&pageSize=5
+
+### Create invalid (expect 400)
+POST http://localhost:5084/articles/
+Content-Type: application/json
+
+{
+  "title": "",
+  "abstract": ""
+}
