@@ -3,6 +3,10 @@ using OpenPeer.Infrastructure;
 using MediatR;
 using FluentValidation;
 using OpenPeer.Application;
+using OpenPeer.Application.Articles.Commands;
+using OpenPeer.Application.Articles.Queries;
+
+var articles = app.MapGroup("/articles");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,5 +28,37 @@ app.UseSwaggerUI();
 
 // Health
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+
+// POST /articles
+articles.MapPost("/", async (CreateArticle cmd, IMediator mediator, IValidator<CreateArticle> validator) =>
+{
+    // Validación explícita
+    ValidationResult result = await validator.ValidateAsync(cmd);
+    if (!result.IsValid)
+    {
+        var errors = result.Errors
+            .GroupBy(e => e.PropertyName)
+            .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
+
+        return Results.ValidationProblem(errors);
+    }
+
+    var id = await mediator.Send(cmd);
+    return Results.Created($"/articles/{id}", new { id });
+});
+
+// GET /articles/{id}
+articles.MapGet("/{id:int}", async (int id, IMediator mediator) =>
+{
+    var dto = await mediator.Send(new GetArticleById(id));
+    return dto is null ? Results.NotFound() : Results.Ok(dto);
+});
+
+// GET /articles?page=1&pageSize=10
+articles.MapGet("/", async (int page, int pageSize, IMediator mediator) =>
+{
+    var list = await mediator.Send(new GetArticlesPaged(page, pageSize));
+    return Results.Ok(list);
+});
 
 app.Run();
